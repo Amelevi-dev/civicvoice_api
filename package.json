@@ -2,14 +2,8 @@
   "name": "civicvoice_api",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/Amelevi-dev/civicvoice_api#readme",
-  "bugs": {
-    "url": "https://github.com/Amelevi-dev/civicvoice_api/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Amelevi-dev/civicvoice_api.git"
-  },
+
+  
   "license": "ISC",
   "author": "ml_01",
   "type": "commonjs",
