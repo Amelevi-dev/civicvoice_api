@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const engagementSchema = new mongoose.Schema(
     {
-        userId : {
+        authorityId : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
@@ -20,7 +20,7 @@ const engagementSchema = new mongoose.Schema(
         status : {
             type: String,
             enum: ['en cours', 'approuver', 'rejeter'],
-            default: 'pending'
+            default: 'en cours'
         }
     },
     { timestamps: true }

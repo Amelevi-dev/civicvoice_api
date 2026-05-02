@@ -22,7 +22,7 @@ exports.verifyToken = (req, res, next) => {
 
       const decoded = jwt.verify(
          token,
-         process.env.JWT_SECRET
+         process.env.JWT_SECRET || 'jwt_secret'
       )
 
       req.userId = decoded.id

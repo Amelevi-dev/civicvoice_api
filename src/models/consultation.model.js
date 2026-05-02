@@ -10,6 +10,11 @@ const consultationSchema = new mongoose.Schema(
             type:String,
             required:true
         },
+        arrondissement: {
+            type: String,
+            required: true,
+            enum: ['Premier Arrondissement','Deuxième Arrondissement','Troisième Arrondissement','Quatrième Arrondissement','Cinquième Arrondissement','Sixième Arrondissement','Septième Arrondissement']
+        },
         createdBy : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',

@@ -11,7 +11,7 @@ exports.generateTokens = (user, isMobile = false) => {
          emailOrPhone: user.emailOrPhone,
          role: user.role || "citizen"
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'jwt_secret',
       {
          expiresIn: isMobile ? "30d" : "2h"
       }
@@ -25,7 +25,7 @@ exports.generateTokens = (user, isMobile = false) => {
       {
          id: user._id
       },
-      process.env.JWT_REFRESH_SECRET,
+      process.env.JWT_REFRESH_SECRET || 'jwt_refresh_secret',
       {
          expiresIn: "7d"
       }

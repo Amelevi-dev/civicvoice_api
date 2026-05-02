@@ -13,7 +13,6 @@ exports.getUsers = async (req, res) => {
 
       const users = await User.find()
          .select('-password')
-         .populate('role')
 
       return res.status(200).send(users)
 
@@ -38,7 +37,6 @@ exports.getUserById = async (req, res) => {
 
       const user = await User.findById(req.params.id)
          .select('-password')
-         .populate('role')
 
       if (!user) {
 
@@ -163,7 +161,6 @@ exports.getMyProfile = async (req, res) => {
 
       const user = await User.findById(req.userId)
          .select('-password')
-         .populate('role')
 
       if (!user) {
 

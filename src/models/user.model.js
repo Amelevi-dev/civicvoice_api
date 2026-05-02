@@ -57,7 +57,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ['citizen', 'authority'],
             required: true
-            
+        },
+        status: {
+            type: Boolean,
+            default: true
         },
         arrondissement:{
             type: String,
