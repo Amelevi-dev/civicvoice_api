@@ -9,7 +9,8 @@ exports.generateTokens = (user, isMobile = false) => {
          id: user._id,
          username: user.username,
          emailOrPhone: user.emailOrPhone,
-         role: user.role || "citizen"
+         role: user.role || "citizen",
+         arrondissement: user.arrondissement
       },
       process.env.JWT_SECRET || 'jwt_secret',
       {

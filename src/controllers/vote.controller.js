@@ -2,7 +2,8 @@
 
 const Vote = require('../models/vote.model')
 const Consultation = require('../models/consultation.model')
-
+const blockchainService = require('../services/blockchain.service');
+const User = require('../models/user.model')
 
 /**
  * @desc    Soumettre un vote
@@ -18,7 +19,15 @@ exports.submitVote = async (req, res) => {
          choice
       } = req.body
 
+      const user = await User.findById(req.userId);
+      if (!user.isVerified) {
+          return res.status(403).json({
+              message: "Votre identité n'est pas certifiée (NINA requis). Seuls les citoyens vérifiés peuvent voter."
+          });
+      }
+
       const consultation = await Consultation.findById(
+...
          consultationId
       )
 
@@ -57,10 +66,20 @@ exports.submitVote = async (req, res) => {
          choice
       })
 
-      await vote.save()
+      await vote.save();
+
+      // Blockchain Integration: Add vote to ledger
+      const block = await blockchainService.addBlock({
+          type: 'VOTE',
+          voteId: vote._id,
+          consultationId: vote.consultationId,
+          choice: vote.choice,
+          timestamp: vote.createdAt
+      });
 
       return res.status(201).send({
-         message: "Vote enregistré avec succès"
+         message: "Vote enregistré avec succès et scellé sur la blockchain",
+         blockchainHash: block.hash
       })
 
    } catch(error) {

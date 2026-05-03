@@ -22,7 +22,14 @@ router.post(
 
 router.get(
    '/',
+   verifyToken,
    consultationController.getConsultations
+)
+
+router.get(
+   '/active',
+   verifyToken,
+   consultationController.getActiveConsultations
 )
 
 router.get(

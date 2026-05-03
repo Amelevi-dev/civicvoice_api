@@ -55,8 +55,18 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ['citizen', 'authority'],
+            enum: ['citizen', 'authority', 'observer'],
             required: true
+        },
+        ninaNumber: {
+            type: String,
+            unique: true,
+            sparse: true, // Allow null for unverified citizens
+            trim: true
+        },
+        isVerified: {
+            type: Boolean,
+            default: false
         },
         status: {
             type: Boolean,

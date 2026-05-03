@@ -20,6 +20,12 @@ router.get(
    userController.getMyProfile
 )
 
+router.post(
+    '/verify-nina',
+    verifyToken,
+    userController.verifyNina
+)
+
 router.get(
    '/:id',
    verifyToken,

@@ -17,7 +17,7 @@ const app = express()
 // ======================
 
 app.use(cors({
-   origin: 'http://localhost:5173',
+   origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
    credentials: true
 }))
 
@@ -52,6 +52,9 @@ require('./src/routes/vote.routes')
 const engagementRoutes =
 require('./src/routes/engagement.routes')
 
+const blockchainRoutes =
+require('./src/routes/blockchain.routes')
+
 app.use('/api/auth', authRoutes)
 
 app.use('/api/users', userRoutes)
@@ -61,6 +64,8 @@ app.use('/api/consultations', consultationRoutes)
 app.use('/api/votes', voteRoutes)
 
 app.use('/api/engagements', engagementRoutes)
+
+app.use('/api/blockchain', blockchainRoutes)
 
 // ======================
 // Test route

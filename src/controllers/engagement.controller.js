@@ -1,7 +1,8 @@
 // src/controllers/engagement.controller.js
 
+const crypto = require('crypto');
 const Engagement = require('../models/engagement.model')
-
+const blockchainService = require('../services/blockchain.service');
 
 /**
  * @desc    Créer un engagement
@@ -24,11 +25,21 @@ exports.createEngagement = async (req, res) => {
          status: "en cours"
       })
 
-      await engagement.save()
+      await engagement.save();
+
+      // Blockchain Integration: Seal the engagement
+      const block = await blockchainService.addBlock({
+          type: 'ENGAGEMENT',
+          engagementId: engagement._id,
+          consultationId: engagement.consultationId,
+          contentHash: crypto.createHash('sha256').update(engagement.content).digest('hex'),
+          authorityId: engagement.authorityId
+      });
 
       return res.status(201).send({
-         message: "Engagement créé avec succès",
-         engagement
+         message: "Engagement créé et scellé sur la blockchain",
+         engagement,
+         blockchainHash: block.hash
       })
 
    } catch(error) {

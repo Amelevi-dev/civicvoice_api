@@ -27,6 +27,7 @@ exports.verifyToken = (req, res, next) => {
 
       req.userId = decoded.id
       req.userRole = decoded.role
+      req.userArrondissement = decoded.arrondissement
 
       next()
 

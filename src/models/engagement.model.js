@@ -19,9 +19,17 @@ const engagementSchema = new mongoose.Schema(
         },
         status : {
             type: String,
-            enum: ['en cours', 'approuver', 'rejeter'],
+            enum: ['en cours', 'réalisé', 'non tenu', 'annulé'],
             default: 'en cours'
-        }
+        },
+        deadline: {
+            type: Date,
+            required: false
+        },
+        updates: [{
+            content: String,
+            date: { type: Date, default: Date.now }
+        }]
     },
     { timestamps: true }
 );
