@@ -92,6 +92,25 @@ exports.deleteUser = async (req, res) => {
 }
 
 /**
+ * @desc    Approuver un utilisateur (Activer son compte)
+ * @route   PUT /api/users/:id/approve
+ * @access  Admin
+ */
+exports.approveUser = async (req, res) => {
+    try {
+       const user = await User.findById(req.params.id)
+       if (!user) {
+          return res.status(404).send({ message: "Utilisateur introuvable" })
+       }
+       user.status = true
+       await user.save()
+       return res.status(200).send({ message: "Utilisateur approuvé avec succès", user })
+    } catch(error) {
+       return res.status(500).send({ message: error.message })
+    }
+ }
+
+/**
  * @desc    Récupérer le profil connecté
  * @route   GET /api/users/profile/me
  * @access  Utilisateur connecté

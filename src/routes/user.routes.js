@@ -5,12 +5,14 @@ const router = require('express').Router()
 const userController = require('../controllers/user.controller')
 
 const {
-   verifyToken
+   verifyToken,
+   isAdmin
 } = require('../middlewares/auth.middleware')
 
 router.get(
    '/',
    verifyToken,
+   isAdmin,
    userController.getUsers
 )
 
@@ -38,9 +40,17 @@ router.put(
    userController.updateUser
 )
 
+router.put(
+    '/:id/approve',
+    verifyToken,
+    isAdmin,
+    userController.approveUser
+ )
+
 router.delete(
    '/:id',
    verifyToken,
+   isAdmin,
    userController.deleteUser
 )
 

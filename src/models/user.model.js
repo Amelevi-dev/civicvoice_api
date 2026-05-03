@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ['citizen', 'authority', 'observer'],
+            enum: ['citizen', 'authority', 'observer', 'admin'],
             required: true
         },
         ninaNumber: {

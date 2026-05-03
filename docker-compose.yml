@@ -3,7 +3,7 @@ services:
     image: mongo:latest
     container_name: civicvoice-db
     ports:
-      - "27017:27017"
+      - "27017"
     volumes:
       - mongodb_data:/data/db
     restart: always
@@ -21,7 +21,7 @@ services:
       - DB_URI=mongodb://mongodb:27017/civicvoice
       - JWT_SECRET=prod_secret_mali_2026
       - JWT_REFRESH_SECRET=prod_refresh_mali_2026
-      - CORS_ORIGIN=http://localhost  # Sera l'URL du frontend
+      - CORS_ORIGIN=https://civicvoices.touredri.dev
       - NODE_ENV=production
     restart: always
 
@@ -29,7 +29,7 @@ services:
     build:
       context: ../civicvoice_backoffice
       args:
-        - VITE_API_URL=http://84.46.240.77:3005/api
+        - VITE_API_URL=https://civicvoice.touredri.dev/api
     container_name: civicvoice-frontend
     ports:
       - "3000:80"

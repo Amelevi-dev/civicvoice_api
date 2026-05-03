@@ -7,6 +7,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
 const dbConfig = require('./src/configs/db')
+const User = require('./src/models/user.model')
+const bcrypt = require('bcryptjs')
 
 dotenv.config()
 
@@ -86,6 +88,24 @@ const startServer = async () => {
    try {
 
       await dbConfig.dbConnect()
+
+      // Seed Super Admin if not exists
+      const adminExists = await User.findOne({ role: 'admin' });
+      if (!adminExists) {
+         const hashedPassword = bcrypt.hashSync('admin123', 12);
+         await User.create({
+            name: 'Super Administrateur',
+            username: 'admin',
+            password: hashedPassword,
+            emailOrPhone: 'admin@civicvoice.ml',
+            role: 'admin',
+            sexe: 'n/A',
+            age: '99',
+            status: true,
+            arrondissement: 'Commune I (Bamako)'
+         });
+         console.log('--- ADMIN INITIALIZED: admin / admin123 ---');
+      }
 
       app.listen(PORT, () => {
          console.log(

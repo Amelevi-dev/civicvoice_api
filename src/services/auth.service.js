@@ -33,6 +33,9 @@ exports.signup = async (data) => {
 
    const hashedPassword = bcrypt.hashSync(password, 12)
 
+   // Security: Authorities and Observers start as inactive (pending admin approval)
+   const status = ['authority', 'observer'].includes(role) ? false : true;
+
    const user = new User({
       name,
       sexe,
@@ -42,7 +45,8 @@ exports.signup = async (data) => {
       username,
       password: hashedPassword,
       role,
-      arrondissement
+      arrondissement,
+      status
    })
 
    await user.save()
@@ -68,6 +72,10 @@ exports.signin = async (data) => {
 
    if (!user) {
       throw new Error("Utilisateur non trouvé")
+   }
+
+   if (user.status === false) {
+       throw new Error("Votre compte est en attente d'approbation par un administrateur.")
    }
 
    const passwordIsValid = bcrypt.compareSync(
