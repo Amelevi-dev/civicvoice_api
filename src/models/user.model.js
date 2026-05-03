@@ -75,7 +75,11 @@ const userSchema = new mongoose.Schema(
         arrondissement:{
             type: String,
             required: true,
-            enum:['Premier Arrondissement','Deuxième Arrondissement','Troisième Arrondissement','Quatrième Arrondissement','Cinquième Arrondissement','Sixième Arrondissement','Septième Arrondissement']
+            enum:[
+                'Commune I', 'Commune II', 'Commune III', 'Commune IV', 'Commune V', 'Commune VI',
+                'Commune I (Bamako)', 'Commune II (Bamako)', 'Commune III (Bamako)', 'Commune IV (Bamako)', 'Commune V (Bamako)', 'Commune VI (Bamako)',
+                'Kayes', 'Koulikoro', 'Sikasso', 'Ségou', 'Mopti', 'Tombouctou', 'Gao', 'Kidal', 'Taoudénit', 'Ménaka', 'Dioïla', 'Kati'
+            ]
         }
     },
     { timestamps: true }
