@@ -3,7 +3,7 @@
 exports.isAdmin = (req, res, next) => {
 
    if (
-      req.userRole === "authority" // ADMIN
+      req.userRole === "admin"
    ) {
       next()
    } else {
@@ -53,8 +53,8 @@ exports.isObserver = (req, res, next) => {
 }
 
 exports.isAuditor = (req, res, next) => {
-    // Both authorities and observers can audit the system
-    if (["authority", "observer"].includes(req.userRole)) {
+    // Authorities, observers and Super-Admin can audit the system
+    if (["authority", "observer", "admin"].includes(req.userRole)) {
         next();
     } else {
         return res.status(403).send({
