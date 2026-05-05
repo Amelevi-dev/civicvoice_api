@@ -16,6 +16,12 @@ router.post(
 )
 
 router.get(
+   '/my-votes',
+   verifyToken,
+   voteController.getMyVotes
+)
+
+router.get(
    '/results/:consultationId',
    voteController.getResults
 )

@@ -93,46 +93,104 @@ exports.submitVote = async (req, res) => {
 
 
 /**
- * @desc    Résultats d'une consultation
+ * @desc    Résultats d'une consultation avec statistiques démographiques
  * @route   GET /api/votes/results/:consultationId
  * @access  Public
  */
 exports.getResults = async (req, res) => {
-
    try {
+      const { consultationId } = req.params;
+      const mongoose = require('mongoose');
 
-      const consultationId = req.params.consultationId
+      // 1. Statistiques globales par choix
+      const globalStats = await Vote.aggregate([
+         { $match: { consultationId: new mongoose.Types.ObjectId(consultationId) } },
+         { $group: { _id: "$choice", count: { $sum: 1 } } }
+      ]);
 
-      const yes = await Vote.countDocuments({
-         consultationId,
-         choice: "yes"
-      })
+      const results = {
+         yes: 0,
+         no: 0,
+         abstain: 0,
+         total: 0,
+         demographics: {
+            gender: { male: 0, female: 0, other: 0 },
+            age: { "18-25": 0, "26-35": 0, "36-50": 0, "50+": 0 }
+         }
+      };
 
-      const no = await Vote.countDocuments({
-         consultationId,
-         choice: "no"
-      })
+      globalStats.forEach(stat => {
+         results[stat._id] = stat.count;
+         results.total += stat.count;
+      });
 
-      const abstain = await Vote.countDocuments({
-         consultationId,
-         choice: "abstain"
-      })
+      // 2. Statistiques démographiques (seulement si des votes existent)
+      if (results.total > 0) {
+         const demographicStats = await Vote.aggregate([
+            { $match: { consultationId: new mongoose.Types.ObjectId(consultationId) } },
+            {
+               $lookup: {
+                  from: 'users',
+                  localField: 'userId',
+                  foreignField: '_id',
+                  as: 'user'
+               }
+            },
+            { $unwind: "$user" },
+            {
+               $group: {
+                  _id: null,
+                  male: { $sum: { $cond: [{ $eq: ["$user.sexe", "Homme"] }, 1, 0] } },
+                  female: { $sum: { $cond: [{ $eq: ["$user.sexe", "Femme"] }, 1, 0] } },
+                  other: { $sum: { $cond: [{ $in: ["$user.sexe", ["n/A", null]] }, 1, 0] } },
+                  age18_25: { 
+                     $sum: { 
+                        $cond: [
+                           { $and: [{ $gte: [{ $toInt: "$user.age" }, 18] }, { $lte: [{ $toInt: "$user.age" }, 25] }] }, 
+                           1, 0
+                        ] 
+                     } 
+                  },
+                  age26_35: { 
+                     $sum: { 
+                        $cond: [
+                           { $and: [{ $gt: [{ $toInt: "$user.age" }, 25] }, { $lte: [{ $toInt: "$user.age" }, 35] }] }, 
+                           1, 0
+                        ] 
+                     } 
+                  },
+                  age36_50: { 
+                     $sum: { 
+                        $cond: [
+                           { $and: [{ $gt: [{ $toInt: "$user.age" }, 35] }, { $lte: [{ $toInt: "$user.age" }, 50] }] }, 
+                           1, 0
+                        ] 
+                     } 
+                  },
+                  age50Plus: { $sum: { $cond: [{ $gt: [{ $toInt: "$user.age" }, 50] }, 1, 0] } }
+               }
+            }
+         ]);
 
-      const total = yes + no + abstain
+         if (demographicStats.length > 0) {
+            const ds = demographicStats[0];
+            results.demographics.gender = { male: ds.male, female: ds.female, other: ds.other };
+            results.demographics.age = {
+               "18-25": ds.age18_25,
+               "26-35": ds.age26_35,
+               "36-50": ds.age36_50,
+               "50+": ds.age50Plus
+            };
+         }
+      }
 
-      return res.status(200).send({
-         total,
-         yes,
-         no,
-         abstain
-      })
+      return res.status(200).send(results);
 
    } catch(error) {
-
+      console.error("Aggregation error:", error);
       return res.status(500).send({
          message: error.message
-      })
-
+      });
    }
 }
 
@@ -165,4 +223,21 @@ exports.checkUserVote = async (req, res) => {
       })
 
    }
+}
+
+/**
+ * @desc    Get all votes of the logged in user
+ * @route   GET /api/votes/my-votes
+ * @access  Citizen
+ */
+exports.getMyVotes = async (req, res) => {
+    try {
+        const votes = await Vote.find({ userId: req.userId })
+            .populate('consultationId')
+            .sort({ createdAt: -1 });
+
+        return res.status(200).send(votes);
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
 }
