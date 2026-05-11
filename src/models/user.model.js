@@ -76,8 +76,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum:[
-                'Commune I', 'Commune II', 'Commune III', 'Commune IV', 'Commune V', 'Commune VI',
-                'Commune I (Bamako)', 'Commune II (Bamako)', 'Commune III (Bamako)', 'Commune IV (Bamako)', 'Commune V (Bamako)', 'Commune VI (Bamako)',
+                'Arrondissement I', 'Arrondissement II', 'Arrondissement III', 'Arrondissement IV', 'Arrondissement V', 'Arrondissement VI', 'Arrondissement VII',
                 'Kayes', 'Koulikoro', 'Sikasso', 'Ségou', 'Mopti', 'Tombouctou', 'Gao', 'Kidal', 'Taoudénit', 'Ménaka', 'Dioïla', 'Kati'
             ]
         }

@@ -102,7 +102,7 @@ const startServer = async () => {
             sexe: 'n/A',
             age: '99',
             status: true,
-            arrondissement: 'Commune I (Bamako)'
+            arrondissement: 'Arrondissement I'
          });
          console.log('--- ADMIN INITIALIZED: admin / admin123 ---');
       }
