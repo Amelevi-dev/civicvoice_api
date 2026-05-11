@@ -6,7 +6,8 @@ const engagementController =
 require('../controllers/engagement.controller')
 
 const {
-   verifyToken
+   verifyToken,
+   verifyTokenOptional
 } = require('../middlewares/auth.middleware')
 
 const {
@@ -22,7 +23,14 @@ router.post(
 
 router.get(
    '/',
+   verifyTokenOptional,
    engagementController.getEngagements
+)
+
+router.get(
+   '/:id',
+   verifyTokenOptional,
+   engagementController.getEngagementById
 )
 
 router.patch(

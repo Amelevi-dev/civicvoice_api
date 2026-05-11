@@ -13,7 +13,11 @@ const consultationSchema = new mongoose.Schema(
         arrondissement: {
             type: String,
             required: true,
-            enum: ['Premier Arrondissement','Deuxième Arrondissement','Troisième Arrondissement','Quatrième Arrondissement','Cinquième Arrondissement','Sixième Arrondissement','Septième Arrondissement']
+            enum: ['1er Arrondissement','2e Arrondissement','3e Arrondissement','4e Arrondissement','5e Arrondissement','6e Arrondissement','7e Arrondissement']
+        },
+        quartier: {
+            type: String,
+            required: true
         },
         createdBy : {
             type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +34,7 @@ const consultationSchema = new mongoose.Schema(
         },
         status : {
             type: String,
-            enum: ['active', 'closed'],
+            enum: ['active', 'closed', 'archived'],
             default: 'active'
         },
         

@@ -6,48 +6,58 @@ const consultationController =
 require('../controllers/consultation.controller')
 
 const {
-   verifyToken
+   verifyToken,
+   verifyTokenOptional
 } = require('../middlewares/auth.middleware')
 
 const {
-   isAdmin
+   isAuthority
 } = require('../middlewares/role.middleware')
 
 router.post(
    '/',
    verifyToken,
-   isAdmin,
+   isAuthority,
    consultationController.createConsultation
 )
 
 router.get(
    '/',
+   verifyTokenOptional,
    consultationController.getConsultations
 )
 
 router.get(
    '/:id',
+   verifyTokenOptional,
    consultationController.getConsultationById
 )
 
 router.put(
    '/:id',
    verifyToken,
-   isAdmin,
+   isAuthority,
    consultationController.updateConsultation
 )
 
 router.patch(
    '/:id/close',
    verifyToken,
-   isAdmin,
+   isAuthority,
    consultationController.closeConsultation
+)
+
+router.patch(
+   '/:id/archive',
+   verifyToken,
+   isAuthority,
+   consultationController.archiveConsultation
 )
 
 router.delete(
    '/:id',
    verifyToken,
-   isAdmin,
+   isAuthority,
    consultationController.deleteConsultation
 )
 

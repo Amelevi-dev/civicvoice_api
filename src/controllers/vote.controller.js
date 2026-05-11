@@ -2,6 +2,7 @@
 
 const Vote = require('../models/vote.model')
 const Consultation = require('../models/consultation.model')
+const User = require('../models/user.model')
 
 
 /**
@@ -30,12 +31,22 @@ exports.submitVote = async (req, res) => {
 
       }
 
-      if (consultation.status === "closed") {
+      // Vérifier que la consultation est en période de vote (active)
+      if (consultation.status !== 'active') {
+         return res.status(400).send({ message: 'Le temps de vote pour cette consultation est terminé.' })
+      }
 
-         return res.status(400).send({
-            message: "Cette consultation est fermée"
-         })
+      // Récupérer le citoyen connecté et vérifier territoire
+      const citizen = await User.findById(req.userId).select('arrondissement quartier role')
+      if (!citizen) return res.status(404).send({ message: 'Utilisateur introuvable' })
 
+      // Optionnel : n'autoriser que les role 'citizen' à voter
+      if (citizen.role && citizen.role !== 'citizen') {
+         return res.status(403).send({ message: 'Accès refusé' })
+      }
+
+      if (String(consultation.arrondissement) !== String(citizen.arrondissement)) {
+         return res.status(403).send({ message: "Vous ne pouvez voter que pour les consultations de votre arrondissement." })
       }
 
       const existingVote = await Vote.findOne({

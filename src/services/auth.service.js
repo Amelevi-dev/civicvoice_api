@@ -16,7 +16,12 @@ exports.signup = async (data) => {
       username,
       password,
       role,
-      arrondissement
+      arrondissement,
+      quartier,
+      institutionName,
+      institutionType,
+      managerName,
+      managerRole
    } = data
 
    const existingUser = await User.findOne({
@@ -33,7 +38,7 @@ exports.signup = async (data) => {
 
    const hashedPassword = bcrypt.hashSync(password, 12)
 
-   const user = new User({
+   const userData = {
       name,
       sexe,
       age,
@@ -42,8 +47,18 @@ exports.signup = async (data) => {
       username,
       password: hashedPassword,
       role,
-      arrondissement
-   })
+      arrondissement,
+      quartier
+   }
+
+   if (role === 'authority') {
+      userData.institutionName = institutionName
+      userData.institutionType = institutionType
+      userData.managerName = managerName
+      userData.managerRole = managerRole
+   }
+
+   const user = new User(userData)
 
    await user.save()
 
@@ -59,15 +74,17 @@ exports.signin = async (data) => {
    const query = {
       $or: [
          { username },
-         { emailOrPhone: username }
+         { emailOrPhone: username },
+         { email: username }
       ]
    }
 
    const user = await User.findOne(query)
-      .populate('role')
 
    if (!user) {
-      throw new Error("Utilisateur non trouvé")
+      const error = new Error("Utilisateur non trouvé")
+      error.statusCode = 401
+      throw error
    }
 
    const passwordIsValid = bcrypt.compareSync(
@@ -76,7 +93,9 @@ exports.signin = async (data) => {
    )
 
    if (!passwordIsValid) {
-      throw new Error("Mot de passe incorrect")
+      const error = new Error("Mot de passe incorrect")
+      error.statusCode = 401
+      throw error
    }
 
    const tokens = tokenService.generateTokens(
@@ -91,7 +110,9 @@ exports.signin = async (data) => {
          username: user.username,
          email: user.email,
          emailOrPhone: user.emailOrPhone,
-         role: user.role
+         role: user.role,
+         arrondissement: user.arrondissement,
+         quartier: user.quartier
       },
       ...tokens
    }

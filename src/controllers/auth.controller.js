@@ -43,8 +43,9 @@ exports.signin = async (req, res) => {
       return res.status(200).send(result)
 
    } catch(error) {
-
-      return res.status(500).send({
+      console.error('Auth signin error:', error)
+      const status = error.statusCode || 500
+      return res.status(status).send({
          message: error.message
       })
 

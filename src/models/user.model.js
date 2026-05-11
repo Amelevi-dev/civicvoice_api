@@ -14,13 +14,13 @@ const userSchema = new mongoose.Schema(
         },*/
         sexe: {
             type: String,
-            required: true,
+            required: function() { return this.role === 'citizen'; },
             enum: ['n/A','Homme', 'Femme'],
             default: 'n/A',
         },
         age: {
             type: String,
-            required: true
+            required: function() { return this.role === 'citizen'; }
         },
         emailOrPhone: { // phone number
             type: String,
@@ -65,7 +65,28 @@ const userSchema = new mongoose.Schema(
         arrondissement:{
             type: String,
             required: true,
-            enum:['Premier Arrondissement','Deuxième Arrondissement','Troisième Arrondissement','Quatrième Arrondissement','Cinquième Arrondissement','Sixième Arrondissement','Septième Arrondissement']
+            enum:['1er Arrondissement','2e Arrondissement','3e Arrondissement','4e Arrondissement','5e Arrondissement','6e Arrondissement','7e Arrondissement']
+        },
+        quartier:{
+            type: String,
+            required: true
+        },
+        // Champs spécifiques aux autorités
+        institutionName: {
+            type: String,
+            required: function() { return this.role === 'authority'; }
+        },
+        institutionType: {
+            type: String,
+            required: function() { return this.role === 'authority'; }
+        },
+        managerName: {
+            type: String,
+            required: function() { return this.role === 'authority'; }
+        },
+        managerRole: {
+            type: String,
+            required: function() { return this.role === 'authority'; }
         }
     },
     { timestamps: true }
