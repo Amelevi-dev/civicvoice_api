@@ -20,6 +20,7 @@ services:
       - PORT=3005
       - DB_URI=mongodb://mongodb:27017/civicvoice
       - DATABASE_URL=mongodb://mongodb:27017/civicvoice
+      - MONGODB_URI=mongodb://mongodb:27017/civicvoice
       - JWT_SECRET=prod_secret_mali_2026
       - JWT_REFRESH_SECRET=prod_refresh_mali_2026
       - CORS_ORIGIN=https://civicvoices.touredri.dev

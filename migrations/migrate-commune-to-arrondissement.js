@@ -38,7 +38,7 @@ const MAPPING = {
 async function migrate() {
   try {
     // Connect to MongoDB
-    const dbUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/civicvoice';
+    const dbUrl = process.env.DB_URI || process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb://mongodb:27017/civicvoice';
     console.log(`Connecting to MongoDB: ${dbUrl}`);
     
     await mongoose.connect(dbUrl);
