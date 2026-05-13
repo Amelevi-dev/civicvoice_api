@@ -32,11 +32,14 @@ services:
       context: ../civicvoice_backoffice
       args:
         - VITE_API_URL=https://civicvoice.touredri.dev/api
+        - BASE_URL=https://civicvoice.touredri.dev/api
     container_name: civicvoice-frontend
     ports:
       - "3000:80"
     depends_on:
       - api
+    environment:
+      - BASE_URL=https://civicvoice.touredri.dev
     restart: always
 
 volumes:
