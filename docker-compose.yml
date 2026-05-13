@@ -1,0 +1,43 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: civicvoice-db
+    ports:
+      - "27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  api:
+    build: 
+      context: ../civicvoice_api
+    container_name: civicvoice-api
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongodb
+    environment:
+      - PORT=3005
+      - DB_URI=mongodb://mongodb:27017/civicvoice
+      - DATABASE_URL=mongodb://mongodb:27017/civicvoice
+      - MONGODB_URI=mongodb://mongodb:27017/civicvoice
+      - JWT_SECRET=c29153bea4ec9321ed7551b896d72e89bf431fbbc8a838ae86683e7811cf0d1c
+      - JWT_REFRESH_SECRET=e6da8151aeebfd9ce723c1def8db34a2e6c23176f53e54ec1478fe045f4c6f7f
+      - CORS_ORIGIN=https://civicvoices.touredri.dev
+      - NODE_ENV=production
+    restart: always
+
+  frontend:
+    build:
+      context: ../civicvoice_backoffice
+      args:
+        - VITE_API_URL=https://civicvoice.touredri.dev/api
+    container_name: civicvoice-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: always
+
+volumes:
+  mongodb_data:
