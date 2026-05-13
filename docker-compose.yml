@@ -37,8 +37,6 @@ services:
       - "3000:80"
     depends_on:
       - api
-    environment:
-      - BASE_URL=https://civicvoice.touredri.dev
     restart: always
 
 volumes:
