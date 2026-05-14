@@ -31,7 +31,7 @@ services:
     build:
       context: ../civicvoice_backoffice
       args:
-        - BASE_URL=https://civicvoice.touredri.dev/api
+        - VITE_API_URL=https://civicvoice.touredri.dev/api
     container_name: civicvoice-frontend
     ports:
       - "3000:80"
